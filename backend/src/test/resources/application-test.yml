@@ -1,0 +1,15 @@
+spring:
+  main:
+    lazy-initialization: true
+  flyway:
+    enabled: false
+
+app:
+  cors:
+    allowed-origins: http://localhost:3000
+  security:
+    aes-master-key: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+    jwt:
+      secret: YjJiLXdhcmVob3VzZS1zdXBlci1zZWNyZXQtand0LWtleS1mb3ItZGV2ZWxvcG1lbnQtb25seS0yMDI2LWhpZ2gtdHJhZmZpYw==
+      access-expiration-seconds: 900
+      refresh-expiration-seconds: 604800

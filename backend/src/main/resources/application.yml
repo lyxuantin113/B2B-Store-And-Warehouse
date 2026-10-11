@@ -1,0 +1,115 @@
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/plain
+    min-response-size: 1024
+
+spring:
+  application:
+    name: b2b-warehouse-backend
+
+  # Java 21 Virtual Threads for high-concurrency I/O workloads
+  threads:
+    virtual:
+      enabled: true
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:b2b_warehouse}
+    username: ${POSTGRES_USER:b2b_user}
+    password: ${POSTGRES_PASSWORD:b2b_secret_2026}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: B2BHikariPool
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+      auto-commit: false
+
+  jpa:
+    # CRITICAL HIGH-TRAFFIC OPTIMIZATION: Disable Open-Session-In-View to release DB connections immediately after @Transactional
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisPG10Dialect
+        format_sql: false
+        jdbc:
+          batch_size: 50
+          time_zone: UTC
+        order_inserts: true
+        order_updates: true
+        # Prevents N+1 queries on lazy-loaded collections when EntityGraph is not explicitly used
+        default_batch_fetch_size: 50
+        connection:
+          provider_disables_autocommit: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis_secret_2026}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9094}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+      properties:
+        enable.idempotence: true
+    consumer:
+      group-id: b2b-warehouse-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.b2b.warehouse.*"
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  security:
+    aes-master-key: ${APP_SECURITY_AES_MASTER_KEY:MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=}
+    jwt:
+      secret: ${APP_SECURITY_JWT_SECRET:YjJiLXdhcmVob3VzZS1zdXBlci1zZWNyZXQtand0LWtleS1mb3ItZGV2ZWxvcG1lbnQtb25seS0yMDI2LWhpZ2gtdHJhZmZpYw==}
+      access-expiration-seconds: ${APP_SECURITY_JWT_ACCESS_EXPIRATION_SECONDS:900}
+      refresh-expiration-seconds: ${APP_SECURITY_JWT_REFRESH_EXPIRATION_SECONDS:604800}

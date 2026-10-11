@@ -1,0 +1,103 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4-alpine
+    container_name: b2b-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-b2b_warehouse}
+      POSTGRES_USER: ${POSTGRES_USER:-b2b_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-b2b_secret_2026}
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-b2b_user} -d ${POSTGRES_DB:-b2b_warehouse}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - b2b-network
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: b2b-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD:-redis_secret_2026}
+      --maxmemory 256mb
+      --maxmemory-policy volatile-lru
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_secret_2026}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - b2b-network
+
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: b2b-kafka
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:${KAFKA_PORT:-9094}
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: 3
+    ports:
+      - "${KAFKA_PORT:-9094}:9094"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - b2b-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: b2b-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-b2b_minio_admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-b2b_minio_secret_2026}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - b2b-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  kafka_data:
+  minio_data:
+
+networks:
+  b2b-network:
+    driver: bridge
