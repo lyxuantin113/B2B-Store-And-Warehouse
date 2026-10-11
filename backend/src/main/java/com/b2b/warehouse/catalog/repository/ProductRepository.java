@@ -26,6 +26,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     Optional<ProductEntity> findWithDetailsByIdAndDeletedAtIsNull(UUID id);
 
     @EntityGraph(attributePaths = {"category", "priceTiers"})
+    List<ProductEntity> findAllWithDetailsByIdInAndDeletedAtIsNull(java.util.Collection<UUID> ids);
+
+    @EntityGraph(attributePaths = {"category", "priceTiers"})
     Optional<ProductEntity> findWithDetailsBySlugIgnoreCaseAndDeletedAtIsNull(String slug);
 
     /**

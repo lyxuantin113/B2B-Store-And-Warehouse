@@ -235,6 +235,10 @@ Detailed engineering specifications are maintained under [`docs/`](./docs):
 - [**docs/02-api-and-security-spec.md**](./docs/02-api-and-security-spec.md) — JWT Dual-Token flow, RBAC matrix, security hardening & REST API catalog.
 - [**docs/03-third-party-and-async-workflows.md**](./docs/03-third-party-and-async-workflows.md) — VNPay, MoMo, VietQR, GHN, AhaMove, Google Maps, Kafka, Cron Jobs & WebSocket Chat.
 - [**docs/04-project-structure-and-devops.md**](./docs/04-project-structure-and-devops.md) — Folder structure, Docker/K8s deployment & JUnit 5 + Mockito testing standards.
+- [**docs/05-module-1-implementation-guide.md**](./docs/05-module-1-implementation-guide.md) — Module 1: Infrastructure, Flyway Schema, AES-256-GCM & Core Security.
+- [**docs/06-module-2-implementation-guide.md**](./docs/06-module-2-implementation-guide.md) — Module 2: JWT Dual-Token Auth, Redis Rotation, RBAC & 3-Stage B2B Onboarding.
+- [**docs/07-module-3-implementation-guide.md**](./docs/07-module-3-implementation-guide.md) — Module 3: Multi-Branch PostGIS, Catalog, Admin Dynamic Price Tiers & Atomic Inventory.
+- [**docs/08-module-4-implementation-guide.md**](./docs/08-module-4-implementation-guide.md) — Module 4: B2B Wholesale & Sample Order Engine, Vietnam Payment/Shipping Gateways & Analytics.
 
 ---
 
