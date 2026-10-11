@@ -37,8 +37,8 @@ Hệ thống là nền tảng **B2B E-Commerce & Partner Portal** kết hợp **
      - Biểu đồ cột (Bar Chart) doanh số đặt hàng 6 tháng gần nhất & Biểu đồ tròn (Donut Chart) cơ cấu trạng thái đơn hàng + Danh sách 4 đơn hàng mới nhất.
    - **Tab 2 — Đặt hàng sỉ nhanh (Quick Order Matrix) & Giỏ hàng One-Page Checkout**:
      - Bảng ma trận sản phẩm cho phép tìm nhanh theo SKU/Tên, chọn chi nhánh xuất kho (hoặc hệ thống tự động chọn kho gần nhất còn hàng), tăng/giảm số lượng theo đơn vị đóng gói (`Thùng/Box`, `Lốc`, `Kiện`).
-     - **Giá sỉ lũy tiến theo bậc số lượng (Tiered Wholesale Pricing)**:
-       - Ví dụ: Bậc 1 (`1 ~ 3 thùng`), Bậc 2 (`4 ~ 6 thùng`), Bậc 3 (`>= 7 thùng`). Khi user thay đổi số lượng, cột đơn giá bậc tương ứng tự động highlight và tính lại tổng tiền.
+     - **Giá sỉ lũy tiến theo bậc số lượng động do Admin cấu hình (Dynamic Admin-Configured Tiered Wholesale Pricing)**:
+       - Khoảng số lượng (`min_qty` ~ `max_qty`, số lượng bậc, nhãn bậc và đơn giá/chiết khấu) của từng sản phẩm **do Admin tự do thiết lập**, tuyệt đối không áp cứng (ví dụ Admin có thể cấu hình `1~5`, `6~20`, `>= 21` cho sản phẩm A và `1~3`, `4~6`, `>= 7` cho sản phẩm B). Khi user thay đổi số lượng, cột đơn giá bậc tương ứng tự động highlight và tính lại tổng tiền.
      - **Cột phải — One-Page Checkout**: Chọn địa chỉ nhận hàng (mặc định từ hồ sơ hoặc tìm địa chỉ mới qua Google Maps), chọn phương thức vận chuyển (**Giao tiêu chuẩn GHN/GHTK** hoặc **Giao hỏa tốc trong ngày AhaMove/GrabExpress** tính phí theo khoảng cách GPS thực tế), chọn cổng thanh toán (**VNPay**, **MoMo**, **VietQR chuyển khoản tự động**).
    - **Tab 3 — Danh mục Sản phẩm & Bảng giá sỉ (Wholesale Catalog)**:
      - Tra cứu toàn bộ danh mục, quy cách đóng gói (`package_spec`), tồn kho khả dụng và bảng giá sỉ từng bậc.
