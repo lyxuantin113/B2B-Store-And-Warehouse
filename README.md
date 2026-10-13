@@ -240,6 +240,7 @@ Detailed engineering specifications are maintained under [`docs/`](./docs):
 - [**docs/07-module-3-implementation-guide.md**](./docs/07-module-3-implementation-guide.md) — Module 3: Multi-Branch PostGIS, Catalog, Admin Dynamic Price Tiers & Atomic Inventory.
 - [**docs/08-module-4-implementation-guide.md**](./docs/08-module-4-implementation-guide.md) — Module 4: B2B Wholesale & Sample Order Engine, Vietnam Payment/Shipping Gateways & Analytics.
 - [**docs/09-module-5-implementation-guide.md**](./docs/09-module-5-implementation-guide.md) — Module 5: Store Locator (PostGIS + Google Maps), Unified Notifications, Dynamic Encrypted Configs, Kafka Outbox Relay & ShedLock Cron Jobs.
+- [**docs/10-module-6-implementation-guide.md**](./docs/10-module-6-implementation-guide.md) — Module 6: Real-time Support Chatbox (WebSocket STOMP over SockJS), JWT Interceptor & Room Isolation.
 
 ---
 
