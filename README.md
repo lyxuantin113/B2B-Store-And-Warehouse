@@ -242,6 +242,7 @@ Detailed engineering specifications are maintained under [`docs/`](./docs):
 - [**docs/09-module-5-implementation-guide.md**](./docs/09-module-5-implementation-guide.md) — Module 5: Store Locator (PostGIS + Google Maps), Unified Notifications, Dynamic Encrypted Configs, Kafka Outbox Relay & ShedLock Cron Jobs.
 - [**docs/10-module-6-implementation-guide.md**](./docs/10-module-6-implementation-guide.md) — Module 6: Real-time Support Chatbox (WebSocket STOMP over SockJS), JWT Interceptor & Room Isolation.
 - [**docs/11-module-7-implementation-guide.md**](./docs/11-module-7-implementation-guide.md) — Module 7: Frontend Architecture Foundation & Core Infrastructure (Next.js 15, TypeScript, Tailwind CSS, JWT Concurrency Queue).
+- [**docs/12-module-8-implementation-guide.md**](./docs/12-module-8-implementation-guide.md) — Module 8: Public Store Locator (PostGIS & Google Maps) & B2B Policy CMS Page.
 
 ---
 
