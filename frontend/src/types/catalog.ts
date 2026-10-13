@@ -20,16 +20,22 @@ export interface Product {
   id: string;
   sku: string;
   name: string;
-  categoryId: string;
+  categoryId?: string | number;
   categoryName?: string;
   description?: string;
+  subtitle?: string;
   basePrice: number;
+  baseWholesalePrice?: number;
+  retailPrice?: number;
   unitLabel: string;
-  packageSpec: string;
-  sampleAllowed: boolean;
-  maxSampleQty: number;
+  packageSpec?: string;
+  unitsPerBox?: number;
+  sampleAllowed?: boolean;
+  sampleEnabled?: boolean;
+  maxSampleQty?: number;
+  sampleMaxQty?: number;
   isActive: boolean;
   totalAvailableStock?: number;
   priceTiers: ProductPriceTier[];
-  createdAt: string;
+  createdAt?: string;
 }

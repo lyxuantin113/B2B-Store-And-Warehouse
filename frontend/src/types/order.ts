@@ -65,8 +65,7 @@ export interface Order {
 }
 
 export interface CreateOrderRequest {
-  branchId?: string;
-  orderType: OrderType;
+  branchId: string;
   paymentMethod: PaymentMethod;
   shippingProvider: ShippingProvider;
   recipientName: string;
@@ -82,8 +81,22 @@ export interface CreateOrderRequest {
 }
 
 export interface OrderCheckoutResponse {
-  order: Order;
-  paymentUrl?: string;
-  vietQrUrl?: string;
-  estimatedDeliveryTime?: string;
+  orderCode: string;
+  orderStatus: OrderStatus;
+  paymentStatus: PaymentStatus;
+  totalAmount: number;
+  paymentMethod: PaymentMethod;
+  paymentUrl?: string | null;
+  vietQrUrl?: string | null;
+  qrPayload?: string | null;
+  trackingNumber?: string | null;
+  requiresPaymentRedirect: boolean;
+}
+
+export interface PartnerDashboardOverview {
+  totalCumulativeSpend: number;
+  totalOrdersCount: number;
+  activeInTransitOrdersCount: number;
+  sampleOrdersCount: number;
+  recentOrders: Order[];
 }

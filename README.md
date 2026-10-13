@@ -244,6 +244,7 @@ Detailed engineering specifications are maintained under [`docs/`](./docs):
 - [**docs/11-module-7-implementation-guide.md**](./docs/11-module-7-implementation-guide.md) — Module 7: Frontend Architecture Foundation & Core Infrastructure (Next.js 15, TypeScript, Tailwind CSS, JWT Concurrency Queue).
 - [**docs/12-module-8-implementation-guide.md**](./docs/12-module-8-implementation-guide.md) — Module 8: Public Store Locator (PostGIS & Google Maps) & B2B Policy CMS Page.
 - [**docs/13-module-9-implementation-guide.md**](./docs/13-module-9-implementation-guide.md) — Module 9: 3-Stage B2B Onboarding Portal & Auth Pages (Login, Register with Stepper, Profile, Change Password).
+- [**docs/14-module-10-implementation-guide.md**](./docs/14-module-10-implementation-guide.md) — Module 10: Full B2B Partner Portal (/portal with 8 Tabs: Overview KPIs, Dynamic Matrix Wholesale Order, Catalog, Order History, Notification Center, Policy, Sample Requests, Profile Summary).
 
 ---
 
