@@ -229,13 +229,22 @@ public class CatalogService {
             int limit
     ) {
         int safeLimit = Math.min(Math.max(limit, 1), 50);
-        List<ProductEntity> fetched = productRepository.findActiveProductsKeyset(
-                categoryId,
-                keyword,
-                cursorCreatedAt,
-                cursorId,
-                PageRequest.of(0, safeLimit + 1)
-        );
+        List<ProductEntity> fetched;
+        if (cursorCreatedAt != null && cursorId != null) {
+            fetched = productRepository.findActiveProductsKeyset(
+                    categoryId,
+                    keyword,
+                    cursorCreatedAt,
+                    cursorId,
+                    PageRequest.of(0, safeLimit + 1)
+            );
+        } else {
+            fetched = productRepository.findActiveProductsInitial(
+                    categoryId,
+                    keyword,
+                    PageRequest.of(0, safeLimit + 1)
+            );
+        }
 
         boolean hasNext = fetched.size() > safeLimit;
         List<ProductEntity> pageItems = hasNext ? fetched.subList(0, safeLimit) : fetched;
@@ -265,13 +274,22 @@ public class CatalogService {
             int limit
     ) {
         int safeLimit = Math.min(Math.max(limit, 1), 50);
-        List<ProductEntity> fetched = productRepository.findActiveProductsKeyset(
-                categoryId,
-                keyword,
-                cursorCreatedAt,
-                cursorId,
-                PageRequest.of(0, safeLimit + 1)
-        );
+        List<ProductEntity> fetched;
+        if (cursorCreatedAt != null && cursorId != null) {
+            fetched = productRepository.findActiveProductsKeyset(
+                    categoryId,
+                    keyword,
+                    cursorCreatedAt,
+                    cursorId,
+                    PageRequest.of(0, safeLimit + 1)
+            );
+        } else {
+            fetched = productRepository.findActiveProductsInitial(
+                    categoryId,
+                    keyword,
+                    PageRequest.of(0, safeLimit + 1)
+            );
+        }
 
         boolean hasNext = fetched.size() > safeLimit;
         List<ProductEntity> pageItems = hasNext ? fetched.subList(0, safeLimit) : fetched;

@@ -57,14 +57,14 @@ public class WarehouseMaintenanceCronScheduler {
             lockAtMostFor = "PT10M"
     )
     @Transactional
-    public int cancelExpiredUnpaidOrdersAndReleaseStock() {
+    public void cancelExpiredUnpaidOrdersAndReleaseStock() {
         Instant cutoff = Instant.now().minus(UNPAID_ORDER_EXPIRY_DURATION);
         List<OrderEntity> expiredOrders = orderRepository.findExpiredUnpaidOrders(
                 cutoff,
                 PageRequest.of(0, EXPIRY_BATCH_SIZE)
         );
         if (expiredOrders.isEmpty()) {
-            return 0;
+            return;
         }
 
         int cancelledCount = 0;
@@ -97,7 +97,6 @@ public class WarehouseMaintenanceCronScheduler {
         }
 
         log.info("ShedLock Cron Job auto-cancelled {} expired unpaid orders and released reserved stock", cancelledCount);
-        return cancelledCount;
     }
 
     @Scheduled(cron = "${app.cron.low-stock-alert:0 0 */6 * * *}")
@@ -107,10 +106,10 @@ public class WarehouseMaintenanceCronScheduler {
             lockAtMostFor = "PT30M"
     )
     @Transactional
-    public int scanLowStockAndEmitSafetyAlerts() {
+    public void scanLowStockAndEmitSafetyAlerts() {
         List<BranchInventoryEntity> lowStockItems = branchInventoryRepository.findLowStockAlerts();
         if (lowStockItems.isEmpty()) {
-            return 0;
+            return;
         }
 
         List<Map<String, Object>> alertEntries = lowStockItems.stream()
@@ -141,6 +140,5 @@ public class WarehouseMaintenanceCronScheduler {
 
         outboxEventRepository.save(alertEvent);
         log.warn("ShedLock Low-Stock Cron detected {} branch SKUs at or below safety_stock threshold", lowStockItems.size());
-        return lowStockItems.size();
     }
 }

@@ -50,12 +50,12 @@ public class OutboxEventRelayScheduler {
             lockAtMostFor = "PT30S"
     )
     @Transactional
-    public int relayPendingOutboxEvents() {
+    public void relayPendingOutboxEvents() {
         List<OutboxEventEntity> pendingEvents = outboxEventRepository.findPendingEventsBatch(
                 PageRequest.of(0, BATCH_SIZE)
         );
         if (pendingEvents.isEmpty()) {
-            return 0;
+            return;
         }
 
         int publishedCount = 0;
@@ -99,6 +99,5 @@ public class OutboxEventRelayScheduler {
         }
 
         outboxEventRepository.saveAll(pendingEvents);
-        return publishedCount;
     }
 }

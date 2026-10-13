@@ -102,7 +102,7 @@ function LoginForm() {
       {/* Quick Demo Credentials */}
       <div className="pt-4 border-t border-slate-800/80 space-y-2">
         <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
-          Tài khoản mẫu dùng thử:
+          Tài khoản mẫu dùng thử (Mật khẩu: Admin@123456):
         </span>
         <div className="flex flex-wrap gap-2">
           <button
@@ -114,10 +114,31 @@ function LoginForm() {
           </button>
           <button
             type="button"
+            onClick={() => handleFillDemo("manager@umego.vn")}
+            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-amber-300 font-medium transition-colors"
+          >
+            Manager (Kho vận)
+          </button>
+          <button
+            type="button"
+            onClick={() => handleFillDemo("seller@umego.vn")}
+            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-cyan-300 font-medium transition-colors"
+          >
+            Seller (Kinh doanh)
+          </button>
+          <button
+            type="button"
             onClick={() => handleFillDemo("partner@vinmart.vn")}
             className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-emerald-300 font-medium transition-colors"
           >
             Partner (Active B2B)
+          </button>
+          <button
+            type="button"
+            onClick={() => handleFillDemo("pending@doanhnghiep.vn")}
+            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] text-purple-300 font-medium transition-colors"
+          >
+            Partner (Chờ duyệt)
           </button>
         </div>
       </div>

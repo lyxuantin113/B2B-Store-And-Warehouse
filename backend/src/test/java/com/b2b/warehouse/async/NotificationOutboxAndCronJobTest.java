@@ -184,9 +184,8 @@ class NotificationOutboxAndCronJobTest {
         when(notificationRepository.save(any(NotificationEntity.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
 
-        int published = outboxEventRelayScheduler.relayPendingOutboxEvents();
+        outboxEventRelayScheduler.relayPendingOutboxEvents();
 
-        assertThat(published).isEqualTo(1);
         assertThat(pendingEvent.getStatus()).isEqualTo("PUBLISHED");
         assertThat(pendingEvent.getPublishedAt()).isNotNull();
         verify(notificationRepository).save(any(NotificationEntity.class));
@@ -225,9 +224,8 @@ class NotificationOutboxAndCronJobTest {
         when(orderRepository.save(any(OrderEntity.class))).thenAnswer(inv -> inv.getArgument(0));
         when(notificationRepository.save(any(NotificationEntity.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        int cancelled = cronScheduler.cancelExpiredUnpaidOrdersAndReleaseStock();
+        cronScheduler.cancelExpiredUnpaidOrdersAndReleaseStock();
 
-        assertThat(cancelled).isEqualTo(1);
         assertThat(expiredOrder.getOrderStatus()).isEqualTo(OrderStatus.CANCELLED);
         assertThat(expiredOrder.getCancelledAt()).isNotNull();
         verify(inventoryService).releaseReservedStockForOrder(

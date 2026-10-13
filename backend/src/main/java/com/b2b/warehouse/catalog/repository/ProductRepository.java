@@ -32,8 +32,31 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     Optional<ProductEntity> findWithDetailsBySlugIgnoreCaseAndDeletedAtIsNull(String slug);
 
     /**
+     * Initial page query fetching active products with Category and Dynamic Price Tiers
+     * (No cursor parameters to prevent Postgres untyped null parameter inference issues).
+     */
+    @EntityGraph(attributePaths = {"category", "priceTiers"})
+    @Query("""
+            SELECT p FROM ProductEntity p
+            WHERE p.isActive = TRUE
+              AND p.deletedAt IS NULL
+              AND (:categoryId IS NULL OR p.category.id = :categoryId)
+              AND (
+                   :keyword IS NULL OR :keyword = ''
+                   OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                   OR LOWER(p.sku) LIKE LOWER(CONCAT('%', :keyword, '%'))
+              )
+            ORDER BY p.createdAt DESC, p.id DESC
+            """)
+    List<ProductEntity> findActiveProductsInitial(
+            @Param("categoryId") Long categoryId,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
+
+    /**
      * Keyset pagination query fetching active products with Category and Dynamic Price Tiers
-     * in a single SQL query (zero N+1 queries and zero OFFSET scan overhead).
+     * using explicit timestamp and UUID seek conditions.
      */
     @EntityGraph(attributePaths = {"category", "priceTiers"})
     @Query("""
@@ -47,8 +70,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
                    OR LOWER(p.sku) LIKE LOWER(CONCAT('%', :keyword, '%'))
               )
               AND (
-                   :cursorCreatedAt IS NULL
-                   OR p.createdAt < :cursorCreatedAt
+                   p.createdAt < :cursorCreatedAt
                    OR (p.createdAt = :cursorCreatedAt AND p.id < :cursorId)
               )
             ORDER BY p.createdAt DESC, p.id DESC
