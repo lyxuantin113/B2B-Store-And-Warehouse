@@ -148,3 +148,4 @@ export class StompChatClient {
 
 // Global singleton instance for UI components
 export const chatSocket = new StompChatClient();
+export const getWebSocketClient = () => chatSocket;

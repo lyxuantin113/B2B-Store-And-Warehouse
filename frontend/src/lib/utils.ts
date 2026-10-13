@@ -13,6 +13,11 @@ export function formatVnd(amount: number | null | undefined): string {
   }).format(amount);
 }
 
+export function formatNumber(num: number | null | undefined): string {
+  if (num == null) return "0";
+  return new Intl.NumberFormat("vi-VN").format(num);
+}
+
 export function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return "-";
   try {

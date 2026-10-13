@@ -245,6 +245,7 @@ Detailed engineering specifications are maintained under [`docs/`](./docs):
 - [**docs/12-module-8-implementation-guide.md**](./docs/12-module-8-implementation-guide.md) — Module 8: Public Store Locator (PostGIS & Google Maps) & B2B Policy CMS Page.
 - [**docs/13-module-9-implementation-guide.md**](./docs/13-module-9-implementation-guide.md) — Module 9: 3-Stage B2B Onboarding Portal & Auth Pages (Login, Register with Stepper, Profile, Change Password).
 - [**docs/14-module-10-implementation-guide.md**](./docs/14-module-10-implementation-guide.md) — Module 10: Full B2B Partner Portal (/portal with 8 Tabs: Overview KPIs, Dynamic Matrix Wholesale Order, Catalog, Order History, Notification Center, Policy, Sample Requests, Profile Summary).
+- [**docs/15-module-11-implementation-guide.md**](./docs/15-module-11-implementation-guide.md) — Module 11: Admin & Seller Management Portal (/admin Suite: Executive 6 Sales KPIs, Partner CRM 3-Stage Review, Order Fulfillment & Bulk Waybill, Multi-Branch Inventory & Safety Stock, Warehouses PostGIS, Catalog CMS & Dynamic Tiers, Real-time Live Chat Agent Desk, Encrypted System Configs & Staff RBAC).
 
 ---
 
