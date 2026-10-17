@@ -71,32 +71,10 @@ services:
     networks:
       - b2b-network
 
-  minio:
-    image: minio/minio:latest
-    container_name: b2b-minio
-    restart: unless-stopped
-    command: server /data --console-address ":9001"
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-b2b_minio_admin}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-b2b_minio_secret_2026}
-    ports:
-      - "${MINIO_API_PORT:-9000}:9000"
-      - "${MINIO_CONSOLE_PORT:-9001}:9001"
-    volumes:
-      - minio_data:/data
-    healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-    networks:
-      - b2b-network
-
 volumes:
   postgres_data:
   redis_data:
   kafka_data:
-  minio_data:
 
 networks:
   b2b-network:

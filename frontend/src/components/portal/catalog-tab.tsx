@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Product, Category } from "@/types/catalog";
+import { Product, Category, CursorPage } from "@/types/catalog";
 import { api } from "@/lib/api-client";
 import { formatVnd } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -20,12 +20,13 @@ export function CatalogTab() {
   useEffect(() => {
     const fetchCatalog = async () => {
       try {
-        const [prodList, catList] = await Promise.all([
-          api.get<Product[]>("/api/v1/public/catalog/products", { requiresAuth: false }),
+        const [prodRes, catList] = await Promise.all([
+          api.get<Product[] | CursorPage<Product>>("/api/v1/public/catalog/products", { requiresAuth: false }),
           api.get<Category[]>("/api/v1/public/catalog/categories", { requiresAuth: false }),
         ]);
-        setProducts(prodList);
-        setCategories(catList);
+        const items = Array.isArray(prodRes) ? prodRes : (prodRes as CursorPage<Product>)?.items || [];
+        setProducts(items);
+        setCategories(Array.isArray(catList) ? catList : []);
       } catch (err) {
         console.warn("Could not load catalog", err);
       } finally {
@@ -36,8 +37,9 @@ export function CatalogTab() {
   }, []);
 
   const filtered = useMemo(() => {
-    return products.filter((p) => {
-      const matchCat = !selectedCatId || p.categoryId === selectedCatId;
+    const list = Array.isArray(products) ? products : [];
+    return list.filter((p) => {
+      const matchCat = !selectedCatId || String(p.categoryId) === String(selectedCatId);
       const matchSearch =
         !search.trim() ||
         p.name.toLowerCase().includes(search.toLowerCase()) ||

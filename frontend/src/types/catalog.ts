@@ -39,3 +39,10 @@ export interface Product {
   priceTiers: ProductPriceTier[];
   createdAt?: string;
 }
+
+export interface CursorPage<T> {
+  items: T[];
+  nextCursorCreatedAt?: string | null;
+  nextCursorId?: string | null;
+  hasNext?: boolean;
+}

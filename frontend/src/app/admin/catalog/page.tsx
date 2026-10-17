@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { api } from "@/lib/api-client";
 import { useToast } from "@/context/toast-context";
-import { Product, Category, ProductPriceTier } from "@/types/catalog";
+import { Product, Category, ProductPriceTier, CursorPage } from "@/types/catalog";
 import { formatVnd } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,12 +47,13 @@ export default function AdminCatalogPage() {
   const fetchCatalog = useCallback(async () => {
     setLoading(true);
     try {
-      const [prodList, catList] = await Promise.all([
-        api.get<Product[]>("/api/v1/public/catalog/products", { requiresAuth: false }),
+      const [prodRes, catList] = await Promise.all([
+        api.get<Product[] | CursorPage<Product>>("/api/v1/public/catalog/products", { requiresAuth: false }),
         api.get<Category[]>("/api/v1/public/catalog/categories", { requiresAuth: false }),
       ]);
-      setProducts(prodList);
-      setCategories(catList);
+      const items = Array.isArray(prodRes) ? prodRes : (prodRes as CursorPage<Product>)?.items || [];
+      setProducts(items);
+      setCategories(Array.isArray(catList) ? catList : []);
     } catch (err) {
       console.warn("Could not load catalog", err);
     } finally {
@@ -129,7 +130,8 @@ export default function AdminCatalogPage() {
     }
   };
 
-  const filteredProducts = products.filter((p) => {
+  const safeProducts = Array.isArray(products) ? products : [];
+  const filteredProducts = safeProducts.filter((p) => {
     const matchCat = !selectedCatId || String(p.categoryId) === selectedCatId;
     const matchSearch =
       !searchTerm.trim() ||
@@ -169,7 +171,7 @@ export default function AdminCatalogPage() {
                 : "bg-slate-950 text-slate-400 hover:text-white border border-slate-800"
             }`}
           >
-            Tất cả danh mục ({products.length})
+            Tất cả danh mục ({safeProducts.length})
           </button>
           {categories.map((c) => (
             <button

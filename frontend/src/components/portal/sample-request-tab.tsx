@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Product } from "@/types/catalog";
+import { Product, CursorPage } from "@/types/catalog";
 import { Branch } from "@/types/branch";
 import { CreateOrderRequest, OrderCheckoutResponse, PaymentMethod, ShippingProvider } from "@/types/order";
 import { useAuth } from "@/context/auth-context";
@@ -65,15 +65,17 @@ export function SampleRequestTab({ onOrderPlaced }: SampleRequestTabProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [prodList, branchList] = await Promise.all([
-          api.get<Product[]>("/api/v1/public/catalog/products", { requiresAuth: false }),
+        const [prodRes, branchList] = await Promise.all([
+          api.get<Product[] | CursorPage<Product>>("/api/v1/public/catalog/products", { requiresAuth: false }),
           api.get<Branch[]>("/api/v1/public/branches", { requiresAuth: false }),
         ]);
 
-        setProducts(prodList);
-        setBranches(branchList);
-        if (branchList.length > 0) {
-          setSelectedBranchId(branchList[0].id);
+        const items = Array.isArray(prodRes) ? prodRes : (prodRes as CursorPage<Product>)?.items || [];
+        setProducts(items);
+        const validBranches = Array.isArray(branchList) ? branchList : [];
+        setBranches(validBranches);
+        if (validBranches.length > 0) {
+          setSelectedBranchId(validBranches[0].id);
         }
       } catch (err) {
         console.warn("Could not load sample catalog", err);
@@ -97,7 +99,8 @@ export function SampleRequestTab({ onOrderPlaced }: SampleRequestTabProps) {
 
   // Filter products eligible for samples
   const sampleEligibleProducts = useMemo(() => {
-    return products.filter((p) => {
+    const list = Array.isArray(products) ? products : [];
+    return list.filter((p) => {
       const isEligible = p.sampleAllowed === true || p.sampleEnabled === true;
       const matchesSearch =
         !searchTerm.trim() ||
@@ -134,9 +137,10 @@ export function SampleRequestTab({ onOrderPlaced }: SampleRequestTabProps) {
 
   // Cart items array
   const cartItems = useMemo(() => {
+    const list = Array.isArray(products) ? products : [];
     return Object.entries(cartQuantities)
       .map(([prodId, qty]) => {
-        const product = products.find((p) => p.id === prodId);
+        const product = list.find((p) => p.id === prodId);
         if (!product) return null;
         return { product, quantity: qty };
       })

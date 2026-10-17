@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Product, ProductPriceTier } from "@/types/catalog";
+import { Product, ProductPriceTier, CursorPage } from "@/types/catalog";
 import { Branch } from "@/types/branch";
 import { CreateOrderRequest, OrderCheckoutResponse, PaymentMethod, ShippingProvider } from "@/types/order";
 import { useAuth } from "@/context/auth-context";
@@ -64,15 +64,17 @@ export function OrderMatrixTab({ onOrderPlaced }: OrderMatrixTabProps) {
   useEffect(() => {
     const fetchCatalog = async () => {
       try {
-        const [prodList, branchList] = await Promise.all([
-          api.get<Product[]>("/api/v1/public/catalog/products", { requiresAuth: false }),
+        const [prodRes, branchList] = await Promise.all([
+          api.get<Product[] | CursorPage<Product>>("/api/v1/public/catalog/products", { requiresAuth: false }),
           api.get<Branch[]>("/api/v1/public/branches", { requiresAuth: false }),
         ]);
 
-        setProducts(prodList);
-        setBranches(branchList);
-        if (branchList.length > 0) {
-          setSelectedBranchId(branchList[0].id);
+        const items = Array.isArray(prodRes) ? prodRes : (prodRes as CursorPage<Product>)?.items || [];
+        setProducts(items);
+        const validBranches = Array.isArray(branchList) ? branchList : [];
+        setBranches(validBranches);
+        if (validBranches.length > 0) {
+          setSelectedBranchId(validBranches[0].id);
         }
       } catch (err) {
         console.warn("Could not load order matrix catalog", err);
@@ -132,18 +134,20 @@ export function OrderMatrixTab({ onOrderPlaced }: OrderMatrixTabProps) {
 
   // Filtered products by search
   const filteredProducts = useMemo(() => {
-    if (!searchTerm.trim()) return products;
+    const list = Array.isArray(products) ? products : [];
+    if (!searchTerm.trim()) return list;
     const s = searchTerm.toLowerCase();
-    return products.filter(
+    return list.filter(
       (p) => p.name.toLowerCase().includes(s) || p.sku.toLowerCase().includes(s)
     );
   }, [products, searchTerm]);
 
   // Calculate cart summary
   const cartItems = useMemo(() => {
+    const list = Array.isArray(products) ? products : [];
     return Object.entries(cartQuantities)
       .map(([productId, qty]) => {
-        const prod = products.find((p) => p.id === productId);
+        const prod = list.find((p) => p.id === productId);
         if (!prod || qty <= 0) return null;
         const unitPrice = getApplicableTierPrice(prod, qty);
         return {
